@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>系统失效诊断 · 离线样机（已增强展示）</title>
+<style>
+  :root{--ok:#1a7f37;--bad:#cf222e;--warn:#9a6700;--mute:#57606a;--info:#0969da;--purple:#8250df}
+  body{max-width:1000px;margin:28px auto;font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Microsoft YaHei",sans-serif;padding:0 18px;color:#1f2328}
+  h1{font-size:20px;margin-bottom:4px}
+  .sub{color:var(--mute);margin:0 0 16px;font-size:13px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  select,button{padding:8px 12px;font-size:14px}
+  label{font-size:13px;color:var(--mute)}
+  .card{background:#f6f8fa;border:1px solid #d0d7de;border-radius:8px;padding:14px 16px;margin-bottom:14px}
+  .card h2{font-size:14px;margin:0 0 10px;color:#24292f}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:14px}
+  .kv b{color:#57606a;font-weight:600}
+  .badge{display:inline-block;padding:1px 8px;border-radius:12px;font-size:12px;font-weight:600;color:#fff}
+  .b-valid,.b-supported{background:var(--ok)}
+  .b-invalid,.b-contradicted{background:var(--bad)}
+  .b-absent,.b-not_checked,.b-unverified{background:var(--mute)}
+  .b-insufficient{background:var(--warn)}
+  .b-rule{background:var(--info)}
+  .b-model{background:var(--purple)}
+  .b-human{background:var(--info)}
+  .hit{background:var(--warn)}
+  .miss{background:var(--ok)}
+  .ev{border-left:3px solid #d0d7de;padding:8px 12px;margin:8px 0;background:#fff;border-radius:4px}
+  .ev .meta{font-size:12px;color:var(--mute)}
+  .ev .txt{font-size:14px;margin-top:4px}
+  .ev .tags{font-size:12px;color:var(--info);margin-top:2px}
+  .note{font-size:12px;color:var(--warn);background:#fff8c5;border:1px solid #d4a72c;border-radius:6px;padding:8px 10px;margin:10px 0}
+  code{background:#eef1f4;padding:1px 5px;border-radius:4px;font-size:13px}
+</style>
+
+<h1>系统失效诊断 · 离线样机</h1>
+<p class="sub">合成材料与固定响应离线重放，无模型 API 调用。页面展示当前请求、来源快照、实际证据与验证状态。</p>
+
+<div class="bar">
+  <select id="cases"></select>
+  <label><input type="checkbox" id="reset"> 运行前清空状态</label>
+  <button id="run">运行所选案例</button>
+</div>
+
+<p class="sub">提示：R01→R02 请保持状态（不勾选清空）；其余独立案例可勾选清空。</p>
+
+<div id="out" class="card"><span style="color:var(--mute)">等待执行</span></div>
+
+<script>
+const el=document.getElementById('cases'),out=document.getElementById('out');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const badge=(t,c)=>`<span class="badge ${c}">${esc(t)}</span>`;
+function statusBadge(s){
+  const map={'valid':'b-valid','invalid':'b-invalid','absent':'b-absent',
+             'supported':'b-supported','contradicted':'b-contradicted',
+             'insufficient':'b-insufficient','not_checked':'b-not_checked',
+             'rule':'b-rule','model':'b-model','human':'b-human','unverified':'b-unverified'};
+  return badge(s, map[s]||'b-unverified');
+}
+function render(o){
+  const r=o.request||{};
+  const ev=(o.evidence||[]).map(e=>`<div class="ev">
+    <div class="meta">id=<b>${esc(e.id)}</b> · doc_id=<b>${esc(e.doc_id)}</b> · snapshot=<b>${esc(e.snapshot)}</b> · page=${esc(e.page)}</div>
+    <div class="txt">${esc(e.text)}</div>
+    <div class="tags">tags: ${esc((e.tags||[]).join(', '))}</div>
+  </div>`).join('');
+  const cits=(o.citations||[]).map(c=>esc(c)).join(', ')||'（空）';
+  out.innerHTML=`
+  <h2>当前请求</h2>
+  <div class="kv">
+    <b>query</b><div>${esc(r.query)}</div>
+    <b>doc_ids</b><div>${esc((r.doc_ids||[]).join(', '))}</div>
+    <b>snapshot</b><div>${esc(r.snapshot)}</div>
+    <b>k</b><div>${esc(r.k)}</div>
+  </div>
+  <h2>响应</h2>
+  <div class="kv">
+    <b>answer</b><div>${esc(o.answer)}</div>
+    <b>citations</b><div>${cits}</div>
+    <b>locator_status</b><div>${statusBadge(o.locator_status)} <span style="color:var(--mute)">引用是否属于当前请求实际资料范围</span></div>
+    <b>support_status</b><div>${statusBadge(o.support_status)} <span style="color:var(--mute)">语义支持（见下方说明）</span></div>
+    <b>judgment_source</b><div>${statusBadge(o.judgment_source)}</div>
+    <b>cache_hit</b><div>${o.cache_hit?badge('命中缓存','hit'):badge('未命中','miss')}</div>
+    <b>request_id</b><div><code>${esc(o.request_id)}</code></div>
+    <b>elapsed_ms</b><div>${esc(o.elapsed_ms?.toFixed?o.elapsed_ms.toFixed(4):o.elapsed_ms)}</div>
+    <b>run_kind</b><div>${esc(o.run_kind)}</div>
+  </div>
+  <div class="note">support_status 由规则（judgment_source=rule）仅依据「引文是否落在本次证据中」判定；<b>未做语义核对</b>。引文可定位（locator valid）不等于内容支持该主张，故本页不把 rule 型 supported 当作已核验结论。</div>
+  <h2>实际证据（${(o.evidence||[]).length} 条）</h2>
+  ${ev||'<div style="color:var(--mute)">无证据</div>'}
+  `;
+}
+fetch('/api/cases').then(r=>r.json()).then(d=>d.cases.forEach(c=>{
+  const o=document.createElement('option');o.value=c.id;
+  o.textContent=`${c.id} · ${c.request.doc_ids.join(',')} / ${c.request.snapshot} · ${c.request.query}`;
+  el.append(o);
+})).catch(e=>out.textContent=String(e));
+document.getElementById('run').onclick=async()=>{
+  try{
+    const res=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({case_id:el.value,reset:document.getElementById('reset').checked})});
+    render(await res.json());
+  }catch(e){out.textContent=String(e)}
+};
+</script>
+</html>

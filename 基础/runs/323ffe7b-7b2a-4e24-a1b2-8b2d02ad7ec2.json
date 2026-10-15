@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "run_id": "323ffe7b-7b2a-4e24-a1b2-8b2d02ad7ec2",
+  "utc": "2026-10-11T08:32:37.066834+00:00",
+  "case_id": "T05",
+  "split": "evaluation",
+  "condition": "K",
+  "variant": "baseline",
+  "mode": "paid",
+  "config": {
+    "provider": "deepseek",
+    "endpoint": "https://api.deepseek.com/chat/completions",
+    "model": "deepseek-v4-pro",
+    "parameters": {
+      "temperature": 0,
+      "max_tokens": 256,
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "timeout_seconds": 90
+  },
+  "data_sha256": "c37cda40ada89a18630dd7be098672f7e942e6f57e6199fe1aa2d6046e2b4961",
+  "dataset_version": "basic-context-v1.2",
+  "student_sha256": "9671df11845de00282df1321394359cee808a7d59d1077ebd4c190d7b36d5d9d",
+  "original_passage_ids": [
+    "P286497",
+    "P371242"
+  ],
+  "selected_passage_ids": [
+    "P286497",
+    "P371242"
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是一个文档信息核验助手。你会收到一个问题和若干段带编号的资料。\n你的任务是只依据这些资料回答问题，并引用真正支撑答案的段落。\n必须严格返回一个 JSON 对象，不要输出任何其他文字或解释，格式如下：\n{\"answer\": \"简短答案\", \"citations\": [\"段落ID\"]}\n\n规则：\n1. 资料足够时，answer 填答案，citations 填语义上真正支撑该答案的段落 id。\n2. 如果问题要求一个数值（比例、百分比、差值、计数等），而资料里包含了计算所需的数字，请先计算再给出结果，不要因为“需要计算”就误判为证据不足。\n3. 只有当回答问题所必需的关键信息在资料中完全缺失、未提及时，answer 才填“证据不足”，citations 列出你检查过但无法得出结论的段落 id（没有则用 []）。\n4. citations 中的 id 必须是资料里真实存在的 id，不得编造。\n5. 段落里出现相同关键词不等于支持你的结论，引用必须语义上真正证明答案。\n6. 不要使用资料以外的知识补充答案，不要把资料缺失的信息编造成事实。\n7. 当问题要求按多个条件筛选选择时，请分两步：先逐条用门槛条件淘汰不满足的项；当多个项都满足门槛后，最终选择必须依据规则里【明确指定】的比较指标及其方向（例如“按预算从低到高”= 选预算最低的项；“按覆盖率从高到低”= 选覆盖率最高的项）。不要用规则没指定的指标（如自行改用“覆盖率最高”）替代最终比较指标。"
+    },
+    {
+      "role": "user",
+      "content": "问题：听澜项目R4版本在2026-06校内组每次请求平均消耗多少焦耳？\n\n资料如下：\n[P286497]（来源：模拟记录/T05/页3）\n听澜项目R4版本在2026-06的记录：校内组TL46经共享网关完成32次问答，客户端记录请求耗时、响应状态和模型显示名称。 资料表还登记文档快照、问题清单、检索候选数与人工反馈。检查员把格式错误、拒答和引用错误分列，遇到版本切换时重新核对实际使用的文档标识。一个批次的中位数不用于推断另一批次的首字延迟。 来源栏包含资料页、采集日期和签署状态。页面只显示与本次请求快照相同的证据，引用可定位和内容得到支持分别记录。临时预热、正式批次、迁移批次采用各自的清单，数字之间不直接合并。 采集端分别记录请求发出时间、收到完整响应时间和错误类型；服务端内部阶段没有被观测。每条回归问题附资料版本和文档范围，合并报表时先检查这些字段，再计算计数与中位数。 每周核对本页行号、资料版本与签署记录。\n\n[P371242]（来源：模拟记录/T05/页6）\n听澜项目R4版本在2026-06的压力组使用八并发请求，96项返回成功、4项超时，P50为3.7秒；项目另列压力组汇总。 本页还记录版本升级后的回滚入口、会话恢复尝试和文档区域映射状态。摘要用于快速浏览，正式决定仍依据签署规则及原始检查项。只有项目、版本、窗口、批次一致的记录才能放在一次决策中比较。 执行环境登记客户端运行时、接口模式与日志保留策略。连续请求按输入顺序保存，每次返回的使用量按服务字段原样写入；缺失字段保持空白。复核记录会链接到当时的输入摘要和结果文件，便于后来核算。 质量复核表同时保存通过项、拒答项和异常项，避免只汇总有输出的请求。后续小范围修复可能改善其中一类错误，但只有原始输入和首次结果仍可访问，才方便判断改善来自哪里。 每周核对本页行号、资料版本与签署记录。\n\n请只依据以上资料回答，并严格返回 JSON。"
+    }
+  ],
+  "input_characters": 1435,
+  "status": "ok",
+  "elapsed_seconds": 1.0493189999833703,
+  "response": {
+    "id": "b5139076-027c-4374-948b-eabb13622bf1",
+    "object": "chat.completion",
+    "created": 1791707557,
+    "model": "deepseek-v4-pro",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"answer\": \"证据不足\", \"citations\": [\"P286497\", \"P371242\"]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 845,
+      "completion_tokens": 22,
+      "total_tokens": 867,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 589
+    },
+    "system_fingerprint": "a307abda487cd1b463329ccb945ce396"
+  },
+  "usage": {
+    "prompt_tokens": 845,
+    "completion_tokens": 22,
+    "total_tokens": 867,
+    "prompt_tokens_details": {
+      "cached_tokens": 256
+    },
+    "prompt_cache_hit_tokens": 256,
+    "prompt_cache_miss_tokens": 589
+  },
+  "http_status": 200
+}

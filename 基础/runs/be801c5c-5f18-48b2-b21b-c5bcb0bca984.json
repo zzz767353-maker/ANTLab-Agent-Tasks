@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "run_id": "be801c5c-5f18-48b2-b21b-c5bcb0bca984",
+  "utc": "2026-10-11T08:12:50.651649+00:00",
+  "case_id": "D02",
+  "split": "dev",
+  "condition": "E",
+  "variant": "baseline",
+  "mode": "paid",
+  "config": {
+    "provider": "deepseek",
+    "endpoint": "https://api.deepseek.com/chat/completions",
+    "model": "deepseek-v4-pro",
+    "parameters": {
+      "temperature": 0,
+      "max_tokens": 256,
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "timeout_seconds": 90
+  },
+  "data_sha256": "c37cda40ada89a18630dd7be098672f7e942e6f57e6199fe1aa2d6046e2b4961",
+  "dataset_version": "basic-context-v1.2",
+  "student_sha256": "2ad1fb9a0ebf98a5ba941d0914b1c0123a116bfb74abc1675a88411440dbef7e",
+  "original_passage_ids": [
+    "P562395",
+    "P974958"
+  ],
+  "selected_passage_ids": [
+    "P562395",
+    "P974958"
+  ],
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是一个文档信息核验助手。你会收到一个问题和若干段带编号的资料。\n你的任务是只依据这些资料回答问题，并引用真正支撑答案的段落。\n必须严格返回一个 JSON 对象，不要输出任何其他文字或解释，格式如下：\n{\"answer\": \"简短答案\", \"citations\": [\"段落ID\"]}\n\n规则：\n1. 资料足够时，answer 填答案，citations 填语义上真正支撑该答案的段落 id。\n2. 如果问题要求一个数值（比例、百分比、差值、计数等），而资料里包含了计算所需的数字，请先计算再给出结果，不要因为“需要计算”就误判为证据不足。\n3. 只有当回答问题所必需的关键信息在资料中完全缺失、未提及时，answer 才填“证据不足”，citations 列出你检查过但无法得出结论的段落 id（没有则用 []）。\n4. citations 中的 id 必须是资料里真实存在的 id，不得编造。\n5. 段落里出现相同关键词不等于支持你的结论，引用必须语义上真正证明答案。\n6. 不要使用资料以外的知识补充答案，不要把资料缺失的信息编造成事实。"
+    },
+    {
+      "role": "user",
+      "content": "问题：青岚项目R6版本在2026-04夜间组使用的服务端GPU具体型号是什么？\n\n资料如下：\n[P562395]（来源：模拟记录/D02/页4）\n批次QL62的复核补页：QL62台账登记服务区域zone-c、完整响应耗时与计费单位；资产、设备遥测与推理节点字段均未被采集。 执行环境登记客户端运行时、接口模式与日志保留策略。连续请求按输入顺序保存，每次返回的使用量按服务字段原样写入；缺失字段保持空白。复核记录会链接到当时的输入摘要和结果文件，便于后来核算。 登记系统保存字段定义和计算口径；百分比的分子分母都能追到清单行。数据在导出前经过一次格式检查，但格式检查通过并不意味着引文语义正确。人员复核与机器状态同时留在记录中。 页面记录打开原文的位置、对应的资料快照和检查状态。引用位置存在时仍可能出现内容不支持的回答，所以核对员保存了主张文本和证据原句；这些字段可在审阅报告中逐项追溯。 每周核对本页行号、资料版本与签署记录。\n\n[P974958]（来源：模拟记录/D02/页1）\n青岚项目R6版本在2026-03的探索组采用24个临时问题，完整支持率为75%，一项耗时中位数为6.0秒。 登记系统保存字段定义和计算口径；百分比的分子分母都能追到清单行。数据在导出前经过一次格式检查，但格式检查通过并不意味着引文语义正确。人员复核与机器状态同时留在记录中。 资料表还登记文档快照、问题清单、检索候选数与人工反馈。检查员把格式错误、拒答和引用错误分列，遇到版本切换时重新核对实际使用的文档标识。一个批次的中位数不用于推断另一批次的首字延迟。 同一资料在多个视图中使用时，系统保留共同文档编号和各自页面位置。跨页引用由原始片段与映射关系组成；页面预览属于呈现数据，不能替代经过复核的文本内容。 每周核对本页行号、资料版本与签署记录。\n\n请只依据以上资料回答，并严格返回 JSON。"
+    }
+  ],
+  "input_characters": 1261,
+  "status": "ok",
+  "elapsed_seconds": 1.3993292001541704,
+  "response": {
+    "id": "897e067d-b102-44df-ad47-4c6a4f44a0b5",
+    "object": "chat.completion",
+    "created": 1791706371,
+    "model": "deepseek-v4-pro",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"answer\": \"证据不足\", \"citations\": [\"P562395\", \"P974958\"]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 720,
+      "completion_tokens": 22,
+      "total_tokens": 742,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 720
+    },
+    "system_fingerprint": "a307abda487cd1b463329ccb945ce396"
+  },
+  "usage": {
+    "prompt_tokens": 720,
+    "completion_tokens": 22,
+    "total_tokens": 742,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 720
+  },
+  "http_status": 200
+}

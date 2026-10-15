@@ -1,0 +1,91 @@
+{
+  "total": 17,
+  "passed": 17,
+  "results": [
+    {
+      "name": "复现: R02 命中缓存(cache_hit=true)",
+      "pass": true,
+      "detail": "cache_hit=True"
+    },
+    {
+      "name": "复现: R02 返回旧结论「30秒」",
+      "pass": true,
+      "detail": "请求超时阈值为30秒。"
+    },
+    {
+      "name": "复现: R02 证据是 v1 的 b01",
+      "pass": true,
+      "detail": "['b01']"
+    },
+    {
+      "name": "复现: R02 假加速(elapsed<R01)",
+      "pass": true,
+      "detail": "R01=0.0635ms R02=0.0217ms"
+    },
+    {
+      "name": "干预: 全新 R02 不命中缓存",
+      "pass": true,
+      "detail": "cache_hit=False"
+    },
+    {
+      "name": "干预: 全新 R02 返回正确「12秒」",
+      "pass": true,
+      "detail": "请求超时阈值为12秒。"
+    },
+    {
+      "name": "干预: 全新 R02 证据是 v2 的 b02",
+      "pass": true,
+      "detail": "['b02']"
+    },
+    {
+      "name": "干预结论: 原因A(缓存污染)成立、原因B(检索错误)被排除",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "修复: R01 仍正确(v1/b01)",
+      "pass": true,
+      "detail": "['b01']"
+    },
+    {
+      "name": "修复: R02 现在返回正确「12秒」",
+      "pass": true,
+      "detail": "请求超时阈值为12秒。"
+    },
+    {
+      "name": "修复: R02 证据是 v2 的 b02",
+      "pass": true,
+      "detail": "['b02']"
+    },
+    {
+      "name": "修复: R02 不再误命中缓存",
+      "pass": true,
+      "detail": "cache_hit=False"
+    },
+    {
+      "name": "回归 R05: metadata beta 证据 b05 且 valid",
+      "pass": true,
+      "detail": "['b05', 'valid']"
+    },
+    {
+      "name": "回归 R06: worker 证据 b06 且 valid",
+      "pass": true,
+      "detail": "['b06', 'valid']"
+    },
+    {
+      "name": "变体(v1→v2→v1): 三个版本各取各的证据",
+      "pass": true,
+      "detail": "['b01', 'b02', 'b01']"
+    },
+    {
+      "name": "变体(query 词序重排): 证据仍是 b02（词袋等价）",
+      "pass": true,
+      "detail": "['b02']"
+    },
+    {
+      "name": "边界(未解决): 语料改版后仍返回旧缓存文本",
+      "pass": true,
+      "detail": "实验A timeout request threshold 为30秒。此值仅适用于第一版请求客户端。"
+    }
+  ]
+}
